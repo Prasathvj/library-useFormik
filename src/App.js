@@ -1,23 +1,52 @@
-import logo from './logo.svg';
 import './App.css';
+import BookList from './Components/BookList';
+import { useEffect, useState } from 'react';
+import AddBook from './Components/AddBook';
+import { Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import UpdateBook from './Components/UpdateBook';
 
 function App() {
+  const [book,setBook] = useState([]);
+useEffect(()=>{
+async function getBook(){
+  const response = await fetch('https://6467503eba7110b663b50284.mockapi.io/books',{
+    method:'GET'
+  })
+  const data =await response.json();
+  if(data){
+    setBook(data)
+  }
+}
+getBook();
+},[])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+      <Switch>
+          <Route exact path='/'>
+            <BookList
+              book={book}
+              setBook={setBook}/>
+          </Route>
+
+          <Route path='/addbook'>
+            <AddBook
+              book={book}
+              setBook={setBook}/>
+          </Route>
+
+          <Route path='/edit/:id'>
+            <UpdateBook
+              book={book}
+              setBook={setBook}/>
+          </Route>
+
+      </Switch>
+      
+
+      
     </div>
   );
 }
